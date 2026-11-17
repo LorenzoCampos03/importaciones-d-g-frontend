@@ -1,0 +1,209 @@
+/* ===== NAVBAR COMPONENT STYLES ===== */
+
+/* Header styles */
+header {
+  backdrop-filter: blur(8px);
+  background: rgba(255, 255, 255, 0.95);
+  border-bottom: 1px solid rgba(229, 231, 235, 0.8);
+}
+
+/* Enhanced shadow for navbar */
+header::after {
+  content: '';
+  position: absolute;
+  bottom: -1px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(to bottom, rgba(0, 0, 0, 0.05), transparent);
+  pointer-events: none;
+}
+
+/* User avatar enhanced styles */
+.user-avatar {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.user-avatar::before {
+  content: '';
+  position: absolute;
+  inset: -2px;
+  background: linear-gradient(45deg, #3b82f6, #6366f1, #8b5cf6);
+  border-radius: 50%;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  z-index: -1;
+}
+
+.user-avatar:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 8px 16px rgba(59, 130, 246, 0.25);
+}
+
+.user-avatar:hover::before {
+  opacity: 0.15;
+}
+
+/* Button enhanced styles */
+button {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+button::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.1), transparent);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+}
+
+button:hover {
+  transform: translateY(-1px);
+}
+
+button:hover::before {
+  width: 100px;
+  height: 100px;
+}
+
+button:active {
+  transform: translateY(0);
+}
+
+/* Mobile menu button specific styles (hamburger/close) */
+button[data-mobile-toggle] {
+  border-radius: 0.5rem;
+  min-width: 40px;
+  min-height: 40px;
+}
+
+button[data-mobile-toggle]:hover {
+  transform: scale(1.05);
+}
+
+/* Sidebar toggle button - visible en móvil y desktop */
+.flex.items-center button {
+  border-radius: 0.5rem;
+  min-width: 40px;
+  min-height: 40px;
+}
+
+.flex.items-center button:hover {
+  transform: scale(1.05);
+}
+
+/* Focus styles for accessibility */
+button:focus {
+  outline: 2px solid rgb(59, 130, 246);
+  outline-offset: 2px;
+  border-radius: 0.5rem;
+}
+
+/* User info text animations */
+.text-right p {
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.text-right:hover p {
+  transform: translateX(-2px);
+}
+
+/* Icon rotation animations */
+button i {
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+button:hover i {
+  transform: scale(1.1);
+}
+
+/* Responsive adjustments for mobile */
+@media (max-width: 768px) {
+  /* Ensure both buttons have proper spacing on mobile */
+  .h-full > div {
+    gap: 0.5rem;
+  }
+
+  /* Mobile specific button adjustments */
+  button[data-mobile-toggle],
+  .flex.items-center button {
+    min-width: 36px;
+    min-height: 36px;
+    padding: 0.5rem;
+  }
+
+  /* Hide user info text on small screens but keep avatar */
+  .text-right {
+    display: none !important;
+  }
+
+  .user-avatar {
+    width: 2rem;
+    height: 2rem;
+    font-size: 0.75rem;
+  }
+
+  /* Adjust title on mobile to prevent overlap */
+  .flex-1.text-center h1 {
+    font-size: 1.125rem;
+    margin: 0 0.5rem;
+  }
+}
+
+@media (max-width: 640px) {
+  /* Extra small screens - make buttons slightly smaller */
+  button[data-mobile-toggle],
+  .flex.items-center button {
+    min-width: 32px;
+    min-height: 32px;
+    padding: 0.375rem;
+  }
+
+  .user-avatar {
+    width: 1.75rem;
+    height: 1.75rem;
+    font-size: 0.7rem;
+  }
+}
+
+/* Loading animation for navbar */
+@keyframes slideDown {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+header {
+  animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Enhanced depth and layering */
+header {
+  z-index: 30;
+  position: relative;
+}
+
+/* Smooth color transitions */
+* {
+  transition-property: color, background-color, border-color, opacity, transform;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  transition-duration: 0.2s;
+}
+
+/* Smooth icon transitions */
+i {
+  transition: transform 0.2s ease;
+}

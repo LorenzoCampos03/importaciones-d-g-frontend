@@ -1,0 +1,19 @@
+<div class="h-screen w-screen bg-gray-50 relative">
+  <app-sidebar></app-sidebar>
+
+  <div
+    class="h-screen transition-all duration-300 flex flex-col"
+    [ngClass]="{
+      'md:ml-16': (isCollapsed$ | async),
+      'md:ml-72': !(isCollapsed$ | async),
+      'ml-0': true
+    }"
+  >
+    <app-navbar></app-navbar>
+    <main class="content-area">
+      <div class="px-4 md:px-6">
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+  </div>
+</div>

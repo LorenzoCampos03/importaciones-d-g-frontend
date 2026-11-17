@@ -1,0 +1,68 @@
+/* Estilos específicos para el seller layout */
+:host {
+  display: block;
+  height: 100vh;
+  width: 100vw;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+.seller-layout-container {
+  height: 100vh;
+  width: 100vw;
+  overflow-x: hidden;
+  position: relative;
+}
+
+/* Asegurar que el sidebar tenga la altura correcta */
+app-sidebar {
+  height: 100vh;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 50;
+}
+
+/* Contenido principal con el margen correcto */
+.main-content {
+  margin-left: 18rem; /* 72 * 0.25rem = 18rem */
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+/* Navbar sticky */
+app-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 40;
+  backdrop-filter: blur(8px);
+  flex-shrink: 0;
+}
+
+/* Área de contenido principal */
+.content-area {
+  flex: 1;
+  padding: 1.5rem;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Responsive design para tablets y móviles */
+@media (max-width: 768px) {
+  app-sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease-in-out;
+  }
+
+  .main-content {
+    margin-left: 0;
+  }
+
+  app-sidebar.open {
+    transform: translateX(0);
+  }
+}

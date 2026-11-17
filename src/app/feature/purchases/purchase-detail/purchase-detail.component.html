@@ -1,0 +1,422 @@
+<div class="min-h-screen bg-gray-50 p-6">
+  <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6 mb-6">
+    <div class="flex items-center justify-between">
+      <div>
+        <h1 class="text-3xl font-bold text-gray-900 mb-2">
+          {{ purchase ? 'Detalle de Compra #' + purchase.saleId : 'Detalles de Compra' }}
+        </h1>
+        <p class="text-gray-600">Información completa de tu compra</p>
+      </div>
+      <div class="flex items-center space-x-3">
+        <div *ngIf="purchase" class="flex items-center space-x-2">
+          <button
+            *ngIf="canEditPurchase()"
+            (click)="toggleEditMode()"
+            [class]="isEditMode ? 'bg-gray-600 hover:bg-gray-700' : 'bg-blue-600 hover:bg-blue-700'"
+            class="text-white px-4 py-2 rounded-lg font-medium flex items-center space-x-2 transition-colors"
+          >
+            <i [class]="isEditMode ? 'fas fa-times' : 'fas fa-edit'"></i>
+            <span>{{ isEditMode ? 'Cancelar Edición' : 'Editar Compra' }}</span>
+          </button>
+
+          <button
+            *ngIf="canPayPurchase()"
+            (click)="payPurchase()"
+            class="bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg font-medium flex items-center space-x-2 transition-colors"
+          >
+            <i class="fas fa-credit-card"></i>
+            <span>Pagar</span>
+          </button>
+
+          <button
+            *ngIf="canCancelPurchase()"
+            (click)="cancelPurchase()"
+            class="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded-lg font-medium flex items-center space-x-2 transition-colors"
+          >
+            <i class="fas fa-times"></i>
+            <span>Cancelar</span>
+          </button>
+        </div>
+
+        <button
+          (click)="goBack()"
+          class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-medium flex items-center space-x-2 transition-colors"
+        >
+          <i class="fas fa-arrow-left"></i>
+          <span>Volver</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="flex items-center justify-center py-12">
+    <div class="text-center">
+      <div
+        class="rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"
+        style="animation: spin 1s linear infinite"
+      ></div>
+      <p class="text-gray-600">Cargando detalles de la compra...</p>
+    </div>
+  </div>
+
+  <div *ngIf="error && !loading" class="bg-white rounded-lg shadow-sm border border-red-200 p-6 mb-6">
+    <div class="flex items-center text-red-600 mb-4">
+      <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+        ></path>
+      </svg>
+      <span>{{ error }}</span>
+    </div>
+    <button
+      (click)="goBack()"
+      class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg text-sm font-medium"
+    >
+      Volver a Mis Compras
+    </button>
+  </div>
+
+  <div *ngIf="!loading && !error && purchase" class="space-y-6">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div class="flex items-center mb-4">
+          <div class="p-3 bg-blue-100 rounded-full">
+            <i class="fas fa-info-circle text-blue-600 text-xl"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 ml-3">Información General</h3>
+        </div>
+        <div class="space-y-3">
+          <div>
+            <p class="text-sm text-gray-500">ID de Compra</p>
+            <p class="text-lg font-semibold text-gray-900">#{{ purchase.saleId }}</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Fecha de Compra</p>
+            <p class="font-medium text-gray-900">{{ formatDate(purchase.saleDate) }}</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Estado</p>
+            <span
+              class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border"
+              [ngClass]="getStatusClass(purchase.status)"
+            >
+              {{ getStatusText(purchase.status) }}
+            </span>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div class="flex items-center mb-4">
+          <div class="p-3 bg-green-100 rounded-full">
+            <i class="fas fa-credit-card text-green-600 text-xl"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 ml-3">Pago y Entrega</h3>
+        </div>
+        <div class="space-y-3">
+          <div>
+            <p class="text-sm text-gray-500">Total</p>
+            <p class="text-2xl font-bold text-green-600">{{ formatCurrency(purchase.total) }}</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Método de Pago</p>
+            <p class="font-medium text-gray-900">{{ purchase.paymentMethod }}</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Método de Entrega</p>
+            <p class="font-medium text-gray-900">{{ purchase.deliveryMethod }}</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+        <div class="flex items-center mb-4">
+          <div class="p-3 bg-purple-100 rounded-full">
+            <i class="fas fa-store text-purple-600 text-xl"></i>
+          </div>
+          <h3 class="text-lg font-semibold text-gray-900 ml-3">Información de Tienda</h3>
+        </div>
+        <div class="space-y-3">
+          <div>
+            <p class="text-sm text-gray-500">Sede</p>
+            <p class="font-medium text-gray-900">{{ purchase.officeName }}</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Atendido por</p>
+            <p class="font-medium text-gray-900">{{ purchase.employeeName }}</p>
+          </div>
+          <div>
+            <p class="text-sm text-gray-500">Total de Productos</p>
+            <p class="font-medium text-gray-900">
+              {{ getTotalItems() }} {{ getTotalItems() === 1 ? 'producto' : 'productos' }}
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="purchase.deliveryAddress" class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div class="flex items-center mb-4">
+        <div class="p-3 bg-orange-100 rounded-full">
+          <i class="fas fa-map-marker-alt text-orange-600 text-xl"></i>
+        </div>
+        <h3 class="text-lg font-semibold text-gray-900 ml-3">Dirección de Entrega</h3>
+      </div>
+      <div class="bg-gray-50 rounded-lg p-4">
+        <p class="text-gray-900">{{ purchase.deliveryAddress }}</p>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+      <div class="px-6 py-4 border-b border-gray-200">
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-semibold text-gray-900">Productos Comprados</h3>
+          <div class="flex items-center space-x-3">
+            <button
+              *ngIf="isEditMode"
+              (click)="openAddProductModal()"
+              class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg font-medium flex items-center space-x-2 transition-colors"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"
+                ></path>
+              </svg>
+              <span>Agregar Producto</span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="overflow-x-auto">
+        <table class="w-full">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Producto</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Descripción
+              </th>
+              <th class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">Cantidad</th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Precio Unit.
+              </th>
+              <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Subtotal</th>
+              <th
+                *ngIf="isEditMode"
+                class="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Acciones
+              </th>
+            </tr>
+          </thead>
+          <tbody class="bg-white divide-y divide-gray-200">
+            <tr *ngFor="let detail of purchase.saleDetails" class="hover:bg-gray-50">
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm font-medium text-gray-900">{{ detail.productName }}</div>
+              </td>
+              <td class="px-6 py-4">
+                <div class="text-sm text-gray-900">{{ detail.productDescription }}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div *ngIf="!isEditMode" class="text-sm text-gray-900 text-center">{{ detail.quantity }}</div>
+                <div *ngIf="isEditMode" class="flex items-center justify-center">
+                  <input
+                    type="number"
+                    min="1"
+                    [value]="detail.quantity"
+                    (change)="onQuantityChange($event, detail.saleDetailId)"
+                    class="w-20 px-2 py-1 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 text-center"
+                  />
+                </div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm font-medium text-gray-900">{{ formatCurrency(detail.unitPrice) }}</div>
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-sm font-bold text-gray-900">{{ formatCurrency(detail.subtotal) }}</div>
+              </td>
+              <td *ngIf="isEditMode" class="px-6 py-4 whitespace-nowrap text-center">
+                <button
+                  (click)="removeDetail(detail.saleDetailId)"
+                  class="bg-red-100 hover:bg-red-200 text-red-700 p-2 rounded-lg transition-colors"
+                  title="Eliminar producto"
+                >
+                  <i class="fas fa-trash text-sm"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+          <tfoot class="bg-gray-50">
+            <tr>
+              <td colspan="4" class="px-6 py-4 text-right text-sm font-medium text-gray-900">Total:</td>
+              <td class="px-6 py-4 whitespace-nowrap">
+                <div class="text-lg font-bold text-green-600">{{ formatCurrency(purchase.total) }}</div>
+              </td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </div>
+
+    <div class="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <div class="flex flex-col sm:flex-row gap-4 justify-between items-center">
+        <div class="text-sm text-gray-500">
+          <i class="fas fa-info-circle mr-2"></i>
+        </div>
+        <div class="flex space-x-3">
+          <button
+            (click)="downloadInvoice()"
+            class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-medium flex items-center space-x-2"
+          >
+            <i class="fas fa-download"></i>
+            <span>Descargar Factura</span>
+          </button>
+          <button
+            (click)="goBack()"
+            class="bg-gray-600 hover:bg-gray-700 text-white px-6 py-3 rounded-lg font-medium flex items-center space-x-2"
+          >
+            <i class="fas fa-arrow-left"></i>
+            <span>Volver</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="showAddProductModal" class="fixed inset-0 z-50 overflow-y-auto modal-backdrop">
+  <div class="flex items-center justify-center min-h-screen p-4">
+    <div
+      class="fixed inset-0 backdrop-blur-sm"
+      style="background-color: rgba(0, 0, 0, 0.4)"
+      (click)="closeAddProductModal()"
+    ></div>
+
+    <div
+      class="bg-white rounded-2xl shadow-2xl max-w-4xl w-full mx-auto z-10 transform transition-all max-h-[90vh] overflow-hidden"
+    >
+      <div class="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-4">
+        <div class="flex items-center justify-between">
+          <h3 class="text-xl font-bold text-white">Agregar Producto a la Compra</h3>
+          <button (click)="closeAddProductModal()" class="text-white hover:text-green-200 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="p-6 overflow-y-auto max-h-[70vh]">
+        <div class="mb-6">
+          <label class="block text-sm font-medium text-gray-700 mb-2">Buscar Productos</label>
+          <input
+            type="text"
+            [(ngModel)]="productSearchTerm"
+            (input)="filterProducts()"
+            placeholder="Buscar por nombre del producto..."
+            class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+          />
+        </div>
+
+        <div
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6"
+          style="max-height: 400px; overflow-y: auto"
+        >
+          <div
+            *ngFor="let product of filteredProducts"
+            (click)="selectProduct(product)"
+            [class]="
+              selectedProduct?.productId === product.productId
+                ? 'border-green-500 bg-green-50'
+                : 'border-gray-200 hover:border-green-300'
+            "
+            class="border rounded-lg p-4 cursor-pointer transition-all hover:shadow-md"
+          >
+            <h4 class="font-semibold text-gray-900 mb-2">{{ product.name }}</h4>
+            <p class="text-sm text-gray-600 mb-2 line-clamp-2">{{ product.description }}</p>
+            <div class="flex items-center justify-between">
+              <span class="text-lg font-bold text-green-600">S/ {{ product.unitPrice.toFixed(2) }}</span>
+              <span
+                class="text-sm"
+                [class]="product.stock > 10 ? 'text-green-600' : product.stock > 0 ? 'text-yellow-600' : 'text-red-600'"
+              >
+                Stock: {{ product.stock }}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div *ngIf="selectedProduct" class="bg-gray-50 rounded-lg p-4 mb-6">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h4 class="font-semibold text-gray-900">{{ selectedProduct.name }}</h4>
+              <p class="text-sm text-gray-600">{{ selectedProduct.description }}</p>
+            </div>
+            <span class="text-lg font-bold text-green-600">S/ {{ selectedProduct.unitPrice.toFixed(2) }}</span>
+          </div>
+
+          <div class="flex items-center space-x-4">
+            <label class="block text-sm font-medium text-gray-700">Cantidad:</label>
+            <input
+              type="number"
+              min="1"
+              [max]="selectedProduct.stock"
+              [(ngModel)]="newProductQuantity"
+              class="w-24 px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
+            />
+            <span class="text-sm text-gray-500">Disponible: {{ selectedProduct.stock }}</span>
+          </div>
+
+          <div class="mt-4 p-3 bg-green-100 rounded-lg">
+            <div class="flex items-center justify-between">
+              <span class="font-medium text-green-800">Subtotal:</span>
+              <span class="text-lg font-bold text-green-800">
+                S/ {{ (selectedProduct.unitPrice * newProductQuantity).toFixed(2) }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="px-6 py-4 bg-gray-50 border-t flex justify-end space-x-3">
+        <button
+          (click)="closeAddProductModal()"
+          class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-100 transition-colors"
+        >
+          Cancelar
+        </button>
+        <button
+          (click)="confirmAddProduct()"
+          [disabled]="!selectedProduct || loading"
+          [class.opacity-50]="!selectedProduct || loading"
+          [class.cursor-not-allowed]="!selectedProduct || loading"
+          class="px-6 py-2 bg-green-600 hover:bg-green-700 text-white rounded-lg transition-colors disabled:hover:bg-green-600"
+        >
+          <span *ngIf="loading" class="inline-flex items-center">
+            <svg
+              class="animate-spin -ml-1 mr-3 h-4 w-4 text-white"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              ></path>
+            </svg>
+            Agregando...
+          </span>
+          <span *ngIf="!loading">Agregar Producto</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

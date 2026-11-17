@@ -1,0 +1,14 @@
+<div class="dashboard-router w-full h-full">
+  <app-admin-dashboard *ngIf="userRole === 'Administrador'"></app-admin-dashboard>
+
+  <app-client-dashboard *ngIf="userRole === 'Cliente'"></app-client-dashboard>
+
+  <app-seller-dashboard *ngIf="userRole === 'Vendedor'"></app-seller-dashboard>
+
+  <div *ngIf="!userRole" class="flex items-center justify-center h-screen bg-gray-100">
+    <div class="text-center">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+      <p class="text-gray-600">Cargando dashboard...</p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,178 @@
+<div class="product-form-container p-6 min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+
+  <div class="mb-8">
+    <div class="flex items-center space-x-4">
+      <button (click)="goBack()"
+        class="bg-white hover:bg-gray-50 text-gray-700 p-3 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+        </svg>
+      </button>
+      <div>
+        <h1 class="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-2">
+          {{ isEditing ? 'Editar Producto' : 'Nuevo Producto' }}
+        </h1>
+        <p class="text-gray-600">
+          {{
+          isEditing
+          ? 'Modifica la información del producto'
+          : 'Completa el formulario para agregar un
+          nuevo producto'
+          }}
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-2xl shadow-xl max-w-4xl mx-auto">
+    <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-8 py-6 rounded-t-2xl">
+      <h3 class="text-2xl font-bold text-white">
+        {{ isEditing ? 'Información del Producto' : 'Datos del Nuevo Producto' }}
+      </h3>
+    </div>
+
+    <div *ngIf="isLoading" class="flex justify-center items-center py-12">
+      <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+    </div>
+
+    <form *ngIf="!isLoading" [formGroup]="productForm" (ngSubmit)="onSubmit()" class="p-8 space-y-8">
+      <div class="space-y-6">
+        <h4 class="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">Información Básica</h4>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Nombre del Producto <span class="text-red-500">*</span>
+          </label>
+          <input type="text" formControlName="name"
+            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder:text-gray-400 placeholder:opacity-70"
+            placeholder="Ingresa el nombre del producto" />
+          <div *ngIf="isFieldInvalid('name')" class="text-red-500 text-sm mt-1">
+            {{ getFieldError('name') }}
+          </div>
+        </div>
+
+        <div>
+          <label class="block text-sm font-medium text-gray-700 mb-2">
+            Descripción <span class="text-red-500">*</span>
+          </label>
+          <textarea formControlName="description" rows="4"
+            class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none placeholder:text-gray-400 placeholder:opacity-70"
+            placeholder="Describe las características principales del producto..."></textarea>
+          <div *ngIf="isFieldInvalid('description')" class="text-red-500 text-sm mt-1">
+            {{ getFieldError('description') }}
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-6">
+        <h4 class="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">Precio y Inventario</h4>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Precio Unitario <span class="text-red-500">*</span>
+            </label>
+            <div class="relative">
+              <span class="absolute left-3 top-3.5 text-gray-500 font-medium">S/</span>
+              <input type="number" formControlName="unitPrice" step="0.01" min="0"
+                class="w-full pl-8 pr-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder:text-gray-400 placeholder:opacity-70"
+                placeholder="0.00" />
+            </div>
+            <div *ngIf="isFieldInvalid('unitPrice')" class="text-red-500 text-sm mt-1">
+              {{ getFieldError('unitPrice') }}
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Stock Inicial <span class="text-red-500">*</span>
+            </label>
+            <input type="number" formControlName="stock" min="0"
+              class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all placeholder:text-gray-400 placeholder:opacity-70"
+              placeholder="Cantidad inicial" />
+            <div *ngIf="isFieldInvalid('stock')" class="text-red-500 text-sm mt-1">
+              {{ getFieldError('stock') }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-6">
+        <h4 class="text-lg font-semibold text-gray-900 border-b border-gray-200 pb-2">Categorización</h4>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Categoría <span class="text-red-500">*</span>
+            </label>
+            <select formControlName="categoryName"
+              class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-700">
+              <option value="" class="text-gray-400">Selecciona una categoría</option>
+              <option *ngFor="let category of categories" [value]="category.categoryName">
+                {{ category.categoryName }}
+              </option>
+            </select>
+            <div *ngIf="isFieldInvalid('categoryName')" class="text-red-500 text-sm mt-1">
+              {{ getFieldError('categoryName') }}
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Proveedor <span class="text-red-500">*</span>
+            </label>
+            <select formControlName="supplierName"
+              class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-700">
+              <option value="" class="text-gray-400">Selecciona un proveedor</option>
+              <option *ngFor="let supplier of suppliers" [value]="supplier.supplierName">
+                {{ supplier.supplierName }}
+              </option>
+            </select>
+            <div *ngIf="isFieldInvalid('supplierName')" class="text-red-500 text-sm mt-1">
+              {{ getFieldError('supplierName') }}
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">
+              Marca <span class="text-red-500">*</span>
+            </label>
+            <select formControlName="brandName"
+              class="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all text-gray-700">
+              <option value="" class="text-gray-400">Selecciona una marca</option>
+              <option *ngFor="let brand of brands" [value]="brand.brandName">
+                {{ brand.brandName }}
+              </option>
+            </select>
+            <div *ngIf="isFieldInvalid('brandName')" class="text-red-500 text-sm mt-1">
+              {{ getFieldError('brandName') }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="flex justify-end space-x-4 pt-8 border-t border-gray-200">
+        <button type="button" (click)="cancel()"
+          class="px-8 py-3 border-2 border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 hover:border-gray-400 font-semibold transition-all transform hover:scale-105">
+          Cancelar
+        </button>
+        <button type="submit" [disabled]="isLoading || productForm.invalid"
+          class="px-8 py-3 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-semibold disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-105 shadow-lg">
+          <span *ngIf="isLoading" class="inline-flex items-center">
+            <svg class="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none"
+              viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+              </path>
+            </svg>
+            {{ isEditing ? 'Actualizando...' : 'Creando...' }}
+          </span>
+          <span *ngIf="!isLoading">
+            {{ isEditing ? 'Actualizar Producto' : 'Crear Producto' }}
+          </span>
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

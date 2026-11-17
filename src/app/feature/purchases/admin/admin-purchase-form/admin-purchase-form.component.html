@@ -1,0 +1,307 @@
+<div class="admin-purchase-form-container p-4 sm:p-6 min-h-screen bg-gray-50">
+     <!-- Header -->
+     <div class="mb-6 sm:mb-8">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+               <div class="flex-1 min-w-0">
+                    <nav class="flex items-center space-x-2 text-sm text-gray-500 mb-2">
+                         <button (click)="goBack()" class="hover:text-gray-700">
+                              <i class="fas fa-arrow-left mr-1"></i>
+                              Compras
+                         </button>
+                         <i class="fas fa-chevron-right"></i>
+                         <span class="text-gray-900">{{ isEditMode ? 'Editar' : 'Nueva' }} Compra</span>
+                    </nav>
+                    <h1 class="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 mb-2">
+                         {{ isEditMode ? 'Editar Compra' : 'Nueva Compra' }}
+                    </h1>
+                    <p class="text-sm sm:text-base text-gray-600">
+                         {{ isEditMode ? 'Modifica los datos de la compra' : 'Registra una nueva compra a proveedor' }}
+                    </p>
+               </div>
+          </div>
+     </div>
+
+     <!-- Loading State -->
+     <div *ngIf="loading" class="flex items-center justify-center h-64">
+          <div class="text-center">
+               <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+               <p class="text-gray-600">{{ isEditMode ? 'Cargando compra...' : 'Guardando compra...' }}</p>
+          </div>
+     </div>
+
+     <!-- Error State -->
+     <div *ngIf="error && !loading" class="bg-red-50 border border-red-200 rounded-lg p-4 mb-6">
+          <div class="flex items-center">
+               <i class="fas fa-exclamation-triangle text-red-500 mr-3"></i>
+               <div>
+                    <h3 class="text-red-800 font-medium">Error</h3>
+                    <p class="text-red-600 text-sm">{{ error }}</p>
+               </div>
+          </div>
+     </div>
+
+     <!-- Form -->
+     <form [formGroup]="purchaseForm" (ngSubmit)="onSubmit()" *ngIf="!loading">
+          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
+               <!-- Main Form -->
+               <div class="lg:col-span-2 space-y-6">
+                    <!-- Basic Information Card -->
+                    <div class="bg-white rounded-lg shadow border border-gray-200 p-6">
+                         <h2 class="text-xl font-semibold text-gray-900 mb-6">Información General</h2>
+
+                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                              <!-- Employee ID -->
+                              <div>
+                                   <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        ID del Empleado *
+                                   </label>
+                                   <input type="number" formControlName="employeeId"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                        [class.border-red-500]="isFieldInvalid('employeeId')"
+                                        placeholder="Ingrese ID del empleado">
+                                   <p *ngIf="isFieldInvalid('employeeId')" class="mt-1 text-sm text-red-600">
+                                        {{ getFieldError('employeeId') }}
+                                   </p>
+                              </div>
+
+                              <!-- Supplier ID -->
+                              <div>
+                                   <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        ID del Proveedor *
+                                   </label>
+                                   <input type="number" formControlName="supplierId"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                        [class.border-red-500]="isFieldInvalid('supplierId')"
+                                        placeholder="Ingrese ID del proveedor">
+                                   <p *ngIf="isFieldInvalid('supplierId')" class="mt-1 text-sm text-red-600">
+                                        {{ getFieldError('supplierId') }}
+                                   </p>
+                              </div>
+
+                              <!-- Purchase Date -->
+                              <div>
+                                   <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Fecha de Compra *
+                                   </label>
+                                   <input type="date" formControlName="purchaseDate"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                        [class.border-red-500]="isFieldInvalid('purchaseDate')">
+                                   <p *ngIf="isFieldInvalid('purchaseDate')" class="mt-1 text-sm text-red-600">
+                                        {{ getFieldError('purchaseDate') }}
+                                   </p>
+                              </div>
+
+                              <!-- Status -->
+                              <div>
+                                   <label class="block text-sm font-medium text-gray-700 mb-2">
+                                        Estado *
+                                   </label>
+                                   <select formControlName="status"
+                                        class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                        [class.border-red-500]="isFieldInvalid('status')">
+                                        <option value="Pendiente">Pendiente</option>
+                                        <option value="Pagado">Pagado</option>
+                                        <option value="Recibido">Recibido</option>
+                                        <option value="Cancelado">Cancelado</option>
+                                   </select>
+                                   <p *ngIf="isFieldInvalid('status')" class="mt-1 text-sm text-red-600">
+                                        {{ getFieldError('status') }}
+                                   </p>
+                              </div>
+                         </div>
+                    </div>
+
+                    <!-- Products Card -->
+                    <div class="bg-white rounded-lg shadow border border-gray-200 p-6">
+                         <div class="flex items-center justify-between mb-6">
+                              <h2 class="text-xl font-semibold text-gray-900">Productos</h2>
+                              <button type="button" (click)="addProductDetail()"
+                                   class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium transition-colors">
+                                   <i class="fas fa-plus mr-2"></i>
+                                   Agregar Producto
+                              </button>
+                         </div>
+
+                         <div formArrayName="purchaseDetails" class="space-y-4">
+                              <div *ngFor="let detail of purchaseDetails.controls; let i = index" [formGroupName]="i"
+                                   class="border border-gray-200 rounded-lg p-4 bg-gray-50">
+                                   <div class="flex justify-between items-start mb-4">
+                                        <h3 class="text-lg font-medium text-gray-900">Producto {{ i + 1 }}</h3>
+                                        <button *ngIf="purchaseDetails.length > 1" type="button"
+                                             (click)="removeProductDetail(i)"
+                                             class="text-red-600 hover:text-red-800 p-1" title="Eliminar producto">
+                                             <i class="fas fa-trash"></i>
+                                        </button>
+                                   </div>
+
+                                   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                                        <!-- Product Selection -->
+                                        <div>
+                                             <label class="block text-sm font-medium text-gray-700 mb-2">
+                                                  Producto *
+                                             </label>
+                                             <select formControlName="productId"
+                                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                                  [class.border-red-500]="isDetailFieldInvalid(i, 'productId')"
+                                                  [disabled]="loadingProducts">
+                                                  <option value="">Seleccione un producto</option>
+                                                  <option *ngFor="let product of products" [value]="product.productId">
+                                                       {{ product.name }} - {{ formatCurrency(product.unitPrice) }}
+                                                  </option>
+                                             </select>
+                                             <p *ngIf="isDetailFieldInvalid(i, 'productId')"
+                                                  class="mt-1 text-sm text-red-600">
+                                                  {{ getDetailFieldError(i, 'productId') }}
+                                             </p>
+                                        </div>
+
+                                        <!-- Quantity -->
+                                        <div>
+                                             <label class="block text-sm font-medium text-gray-700 mb-2">
+                                                  Cantidad *
+                                             </label>
+                                             <input type="number" formControlName="quantity" min="1"
+                                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                                  [class.border-red-500]="isDetailFieldInvalid(i, 'quantity')"
+                                                  placeholder="0">
+                                             <p *ngIf="isDetailFieldInvalid(i, 'quantity')"
+                                                  class="mt-1 text-sm text-red-600">
+                                                  {{ getDetailFieldError(i, 'quantity') }}
+                                             </p>
+                                        </div>
+
+                                        <!-- Unit Cost -->
+                                        <div>
+                                             <label class="block text-sm font-medium text-gray-700 mb-2">
+                                                  Precio Unitario *
+                                             </label>
+                                             <input type="number" formControlName="unitCost" step="0.01" min="0.01"
+                                                  class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                                                  [class.border-red-500]="isDetailFieldInvalid(i, 'unitCost')"
+                                                  placeholder="0.00">
+                                             <p *ngIf="isDetailFieldInvalid(i, 'unitCost')"
+                                                  class="mt-1 text-sm text-red-600">
+                                                  {{ getDetailFieldError(i, 'unitCost') }}
+                                             </p>
+                                        </div>
+
+                                        <!-- Total Cost -->
+                                        <div>
+                                             <label class="block text-sm font-medium text-gray-700 mb-2">
+                                                  Total
+                                             </label>
+                                             <div
+                                                  class="w-full px-3 py-2 bg-gray-100 border border-gray-300 rounded-lg text-gray-700">
+                                                  {{ formatCurrency(detail.get('totalCost')?.value || 0) }}
+                                             </div>
+                                        </div>
+                                   </div>
+                              </div>
+                         </div>
+
+                         <!-- Empty State -->
+                         <div *ngIf="purchaseDetails.length === 0" class="text-center py-8">
+                              <i class="fas fa-box-open text-gray-300 text-4xl mb-2"></i>
+                              <p class="text-gray-500 mb-4">No hay productos agregados</p>
+                              <button type="button" (click)="addProductDetail()"
+                                   class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg font-medium">
+                                   Agregar Primer Producto
+                              </button>
+                         </div>
+                    </div>
+               </div>
+
+               <!-- Sidebar -->
+               <div class="space-y-6">
+                    <!-- Summary Card -->
+                    <div class="bg-white rounded-lg shadow border border-gray-200 p-6">
+                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Resumen</h3>
+
+                         <div class="space-y-3">
+                              <div class="flex justify-between items-center">
+                                   <span class="text-sm text-gray-600">Productos:</span>
+                                   <span class="text-sm font-medium text-gray-900">
+                                        {{ purchaseDetails.length }}
+                                   </span>
+                              </div>
+
+                              <div class="flex justify-between items-center">
+                                   <span class="text-sm text-gray-600">Total de Items:</span>
+                                   <span class="text-sm font-medium text-gray-900">
+                                        {{ getTotalItems() }}
+                                   </span>
+                              </div>
+
+                              <div class="border-t pt-3">
+                                   <div class="flex justify-between items-center">
+                                        <span class="text-base font-semibold text-gray-900">Total:</span>
+                                        <span class="text-xl font-bold text-blue-600">
+                                             {{ formatCurrency(getTotalCost()) }}
+                                        </span>
+                                   </div>
+                              </div>
+                         </div>
+                    </div>
+
+                    <!-- Actions Card -->
+                    <div class="bg-white rounded-lg shadow border border-gray-200 p-6">
+                         <h3 class="text-lg font-semibold text-gray-900 mb-4">Acciones</h3>
+
+                         <div class="space-y-3">
+                              <button type="submit" [disabled]="purchaseForm.invalid || loading"
+                                   class="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 disability:cursor-not-allowed text-white px-4 py-3 rounded-lg font-semibold transition-colors">
+                                   <i class="fas fa-save mr-2"></i>
+                                   {{ isEditMode ? 'Actualizar' : 'Crear' }} Compra
+                              </button>
+
+                              <button type="button" (click)="goBack()"
+                                   class="w-full bg-gray-100 hover:bg-gray-200 text-gray-700 px-4 py-3 rounded-lg font-medium transition-colors">
+                                   <i class="fas fa-times mr-2"></i>
+                                   Cancelar
+                              </button>
+                         </div>
+
+                         <!-- Form Validation Info -->
+                         <div *ngIf="purchaseForm.invalid && purchaseForm.touched"
+                              class="mt-4 p-3 bg-red-50 border border-red-200 rounded-lg">
+                              <h4 class="text-sm font-medium text-red-800 mb-2">
+                                   <i class="fas fa-exclamation-triangle mr-1"></i>
+                                   Errores en el formulario:
+                              </h4>
+                              <ul class="text-sm text-red-700 space-y-1">
+                                   <li
+                                        *ngIf="purchaseForm.get('employeeId')?.invalid && purchaseForm.get('employeeId')?.touched">
+                                        • ID del empleado es requerido
+                                   </li>
+                                   <li
+                                        *ngIf="purchaseForm.get('supplierId')?.invalid && purchaseForm.get('supplierId')?.touched">
+                                        • ID del proveedor es requerido
+                                   </li>
+                                   <li
+                                        *ngIf="purchaseForm.get('purchaseDate')?.invalid && purchaseForm.get('purchaseDate')?.touched">
+                                        • Fecha de compra es requerida
+                                   </li>
+                                   <li *ngIf="purchaseDetails.length === 0">
+                                        • Debe agregar al menos un producto
+                                   </li>
+                              </ul>
+                         </div>
+                    </div>
+
+                    <!-- Help Card -->
+                    <div class="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                         <h4 class="text-sm font-medium text-blue-800 mb-2">
+                              <i class="fas fa-info-circle mr-1"></i>
+                              Ayuda
+                         </h4>
+                         <ul class="text-sm text-blue-700 space-y-1">
+                              <li>• Complete todos los campos obligatorios (*)</li>
+                              <li>• Agregue al menos un producto a la compra</li>
+                              <li>• Los totales se calculan automáticamente</li>
+                              <li>• Puede cambiar el estado según el progreso</li>
+                         </ul>
+                    </div>
+               </div>
+          </div>
+     </form>
+</div>

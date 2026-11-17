@@ -1,0 +1,288 @@
+<div class="sale-detail-container p-6 min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 page-transition">
+
+  <div class="mb-8">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center space-x-4">
+        <button (click)="goBack()"
+          class="bg-white hover:bg-gray-50 text-gray-700 p-3 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+        </button>
+        <div>
+          <h1
+            class="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-2">
+            Detalles de la {{ currentUser?.role === 'Cliente' ? 'Compra' : 'Venta' }} #{{ sale?.saleId }}
+          </h1>
+          <p class="text-gray-600">
+            Información completa de la {{ currentUser?.role === 'Cliente' ? 'compra' : 'venta' }}
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div *ngIf="isLoading" class="flex justify-center items-center py-20">
+    <div class="loading-spinner rounded-full h-12 w-12 border-b-2 border-blue-600"></div>
+  </div>
+
+  <div *ngIf="!isLoading && sale" class="space-y-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div class="bg-white rounded-2xl shadow-lg overflow-hidden info-card">
+        <div class="bg-gradient-to-r from-blue-600 to-indigo-600 px-6 py-4">
+          <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 bg-blue-400 rounded-lg flex items-center justify-center">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M9 5H7a2 2 0 00-2 2v11a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
+                </path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-white">Información de la Venta</h3>
+          </div>
+        </div>
+        <div class="p-6">
+          <div class="space-y-4">
+            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+              <span class="text-gray-600 font-medium">ID de Venta:</span>
+              <span class="font-bold text-gray-900">#{{ sale.saleId }}</span>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+              <span class="text-gray-600 font-medium">Fecha:</span>
+              <span class="font-medium text-gray-900">{{ sale.saleDate | date: 'dd/MM/yyyy' }}</span>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+              <span class="text-gray-600 font-medium">Estado:</span>
+              <span [ngClass]="getStatusClass(sale.status)" class="px-3 py-1 rounded-full text-sm font-semibold">
+                {{ sale.status }}
+              </span>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+              <span class="text-gray-600 font-medium">Total:</span>
+              <span class="font-bold text-2xl text-green-600">S/ {{ sale.total.toFixed(2) }}</span>
+            </div>
+            <div class="flex justify-between items-center py-2">
+              <span class="text-gray-600 font-medium">Vendedor:</span>
+              <span class="font-medium text-gray-900">{{ sale.employeeName }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="bg-white rounded-2xl shadow-lg overflow-hidden info-card">
+        <div class="bg-gradient-to-r from-green-600 to-emerald-600 px-6 py-4">
+          <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 bg-green-400 rounded-lg flex items-center justify-center">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-white">Cliente y Entrega</h3>
+          </div>
+        </div>
+        <div class="p-6">
+          <div class="space-y-4">
+            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+              <span class="text-gray-600 font-medium">Cliente:</span>
+              <span class="font-bold text-gray-900">{{ sale.clientName }}</span>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+              <span class="text-gray-600 font-medium">Método de Pago:</span>
+              <span [ngClass]="getPaymentMethodClass(sale.paymentMethod)"
+                class="px-3 py-1 rounded-full text-sm font-semibold">
+                {{ sale.paymentMethod }}
+              </span>
+            </div>
+            <div class="flex justify-between items-center py-2 border-b border-gray-100">
+              <span class="text-gray-600 font-medium">Método de Entrega:</span>
+              <span class="font-medium text-gray-900">{{ sale.deliveryMethod }}</span>
+            </div>
+            <div *ngIf="sale.deliveryAddress" class="py-2">
+              <span class="text-gray-600 font-medium block mb-2">Dirección de Entrega:</span>
+              <span class="font-medium text-gray-900 bg-gray-50 p-3 rounded-lg block">{{ sale.deliveryAddress }}</span>
+            </div>
+            <div class="flex justify-between items-center py-2">
+              <span class="text-gray-600 font-medium">Oficina:</span>
+              <span class="font-medium text-gray-900">{{ sale.officeName }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="bg-white rounded-2xl shadow-lg overflow-hidden info-card">
+      <div class="bg-gradient-to-r from-purple-600 to-indigo-600 px-6 py-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <div class="w-8 h-8 bg-purple-400 rounded-lg flex items-center justify-center">
+              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                  d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+              </svg>
+            </div>
+            <h3 class="text-xl font-bold text-white">Productos</h3>
+          </div>
+          <div class="flex items-center space-x-3">
+            <span class="bg-purple-400 text-white px-3 py-1 rounded-full text-sm font-semibold">
+              {{ sale.saleDetails.length }} productos
+            </span>
+            <button *ngIf="canEditSale()" (click)="toggleEditMode()"
+              [class]="isEditMode ? 'bg-orange-500 hover:bg-orange-600' : 'bg-white hover:bg-gray-100'"
+              [class.text-white]="isEditMode" [class.text-purple-600]="!isEditMode"
+              class="px-3 py-1 rounded-lg text-sm font-semibold transition-all">
+              <div class="flex items-center space-x-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z">
+                  </path>
+                </svg>
+                <span>{{ isEditMode ? 'Finalizar' : 'Editar' }}</span>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+      <div class="p-6">
+        <div class="overflow-x-auto">
+          <table class="w-full">
+            <thead class="bg-gray-50">
+              <tr>
+                <th class="px-6 py-4 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Producto</th>
+                <th class="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Cantidad
+                </th>
+                <th class="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Precio Unit.
+                </th>
+                <th class="px-6 py-4 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Subtotal
+                </th>
+                <th *ngIf="isEditMode"
+                  class="px-6 py-4 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Acciones
+                </th>
+              </tr>
+            </thead>
+            <tbody class="bg-white divide-y divide-gray-200">
+              <tr *ngFor="let detail of sale.saleDetails" class="hover:bg-gray-50 transition-colors">
+                <td class="px-6 py-4">
+                  <div class="font-medium text-gray-900 mb-1">{{ detail.productName }}</div>
+                  <div class="text-sm text-gray-500">{{ detail.productDescription }}</div>
+                </td>
+                <td class="px-6 py-4 text-center">
+                  <span *ngIf="!isEditMode"
+                    class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-semibold">
+                    {{ detail.quantity }}
+                  </span>
+                  <input *ngIf="isEditMode" type="number" [value]="detail.quantity" min="1"
+                    (change)="onQuantityChange($event, detail.saleDetailId)"
+                    class="w-20 px-3 py-1 border border-gray-300 rounded-lg text-center text-sm font-semibold focus:ring-2 focus:ring-blue-500 focus:border-blue-500" />
+                </td>
+                <td class="px-6 py-4 text-right font-medium text-gray-900">S/ {{ detail.unitPrice.toFixed(2) }}</td>
+                <td class="px-6 py-4 text-right font-bold text-green-600">S/ {{ detail.subtotal.toFixed(2) }}</td>
+                <td *ngIf="isEditMode" class="px-6 py-4 text-center">
+                  <button (click)="removeDetail(detail.saleDetailId)"
+                    class="bg-red-100 hover:bg-red-200 text-red-700 p-2 rounded-lg transition-colors"
+                    title="Eliminar producto">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16">
+                      </path>
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+            <tfoot class="bg-gray-50">
+              <tr>
+                <td colspan="3" class="px-6 py-4 text-right font-bold text-gray-900">Total General:</td>
+                <td class="px-6 py-4 text-right font-bold text-2xl text-green-600">S/ {{ sale.total.toFixed(2) }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="flex justify-center space-x-4">
+      <button (click)="goBack()"
+        class="action-button px-8 py-3 bg-gray-600 hover:bg-gray-700 text-white font-medium rounded-xl transition-all shadow-lg">
+        <div class="flex items-center space-x-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path>
+          </svg>
+          <span>Volver</span>
+        </div>
+      </button>
+
+      <button *ngIf="canPaySale()" (click)="paySale()"
+        class="action-button px-8 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-xl transition-all shadow-lg">
+        <div class="flex items-center space-x-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z">
+            </path>
+          </svg>
+          <span>Pagar Compra</span>
+        </div>
+      </button>
+
+      <button *ngIf="canGenerateReport()" (click)="downloadReport()"
+        class="action-button px-8 py-3 bg-purple-600 hover:bg-purple-700 text-white font-medium rounded-xl transition-all shadow-lg">
+        <div class="flex items-center space-x-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+            </path>
+          </svg>
+          <span>Descargar Reporte PDF</span>
+        </div>
+      </button>
+
+      <button *ngIf="canGenerateReport()" (click)="viewReport()"
+        class="action-button px-8 py-3 bg-orange-600 hover:bg-orange-700 text-white font-medium rounded-xl transition-all shadow-lg">
+        <div class="flex items-center space-x-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z">
+            </path>
+          </svg>
+          <span>Ver Reporte PDF</span>
+        </div>
+      </button>
+
+      <button *ngIf="canCancelSale()" (click)="cancelSale()"
+        class="action-button px-8 py-3 bg-red-600 hover:bg-red-700 text-white font-medium rounded-xl transition-all shadow-lg">
+        <div class="flex items-center space-x-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+          <span>{{ currentUser?.role === 'Cliente' ? 'Cancelar Compra' : 'Cancelar Venta' }}</span>
+        </div>
+      </button>
+
+      <button *ngIf="canRestoreSale()" (click)="restoreSale()"
+        class="action-button px-8 py-3 bg-green-600 hover:bg-green-700 text-white font-medium rounded-xl transition-all shadow-lg">
+        <div class="flex items-center space-x-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15">
+            </path>
+          </svg>
+          <span>Restaurar Venta</span>
+        </div>
+      </button>
+    </div>
+  </div>
+
+
+  <div *ngIf="!isLoading && !sale" class="text-center py-20">
+    <svg class="mx-auto h-24 w-24 text-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M9 5H7a2 2 0 00-2 2v11a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2">
+      </path>
+    </svg>
+    <h3 class="text-lg font-medium text-gray-900 mb-2">Venta no encontrada</h3>
+    <p class="text-gray-500 mb-4">No se pudo cargar la información de esta venta.</p>
+    <button (click)="goBack()" class="px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl transition-colors">
+      Volver a la lista
+    </button>
+  </div>
+</div>

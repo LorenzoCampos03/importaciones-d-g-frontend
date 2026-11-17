@@ -1,0 +1,185 @@
+<div
+  *ngIf="isMobileOpen$ | async"
+  class="mobile-backdrop fixed inset-0 z-40 md:hidden bg-black bg-opacity-50 backdrop-blur-sm"
+  (click)="closeMobileMenu()"
+></div>
+
+<aside
+  class="sidebar-container fixed left-0 top-0 h-screen bg-white shadow-xl border-r border-gray-200 transition-all duration-300 z-50"
+  [ngClass]="{
+    'w-16': (isCollapsed$ | async),
+    'w-72': !(isCollapsed$ | async),
+    'translate-x-0': (isMobileOpen$ | async),
+    '-translate-x-full md:translate-x-0': !(isMobileOpen$ | async)
+  }"
+>
+  <div class="h-full flex flex-col">
+    <div class="logo-section h-16 flex items-center px-4 flex-shrink-0 justify-between border-b border-gray-100">
+      <div
+        class="logo-container flex items-center"
+        [ngClass]="{
+          'justify-center w-full': (isCollapsed$ | async),
+          'justify-start': !(isCollapsed$ | async)
+        }"
+      >
+        <div
+          class="logo-icon w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-lg flex items-center justify-center flex-shrink-0"
+        >
+          <i class="fas fa-gem text-white text-lg"></i>
+        </div>
+        <div *ngIf="!(isCollapsed$ | async)" class="ml-3 transition-opacity duration-300">
+          <h1 class="text-lg font-bold text-gray-800">Importaciones</h1>
+          <p class="text-xs text-gray-500 font-medium">D&G</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="user-info-section px-4 py-4 border-b border-gray-100 flex-shrink-0">
+      <div
+        class="flex items-center"
+        [ngClass]="{
+          'flex-col space-y-2': (isCollapsed$ | async),
+          'space-x-3': !(isCollapsed$ | async)
+        }"
+      >
+        <div
+          class="user-avatar w-8 h-8 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-full flex items-center justify-center flex-shrink-0"
+        >
+          <i class="fas fa-user text-white text-sm"></i>
+        </div>
+        <div *ngIf="!(isCollapsed$ | async)" class="transition-opacity duration-300">
+          <p class="text-sm font-medium text-gray-800">{{ currentUser?.name || 'Usuario' }}</p>
+          <p class="text-xs text-gray-500">{{ currentUser?.role || 'Rol' }}</p>
+        </div>
+      </div>
+    </div>
+
+    <nav class="flex-1 overflow-y-auto py-4 px-3 custom-scrollbar">
+      <ng-container [ngSwitch]="currentUser?.role">
+        <ng-container *ngSwitchCase="'Administrador'">
+          <div class="mb-4">
+            <h3
+              *ngIf="!(isCollapsed$ | async)"
+              class="section-title text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2 transition-opacity duration-300"
+            >
+              Panel de Control
+            </h3>
+            <a
+              *ngFor="let link of adminLinks"
+              [routerLink]="link.path"
+              routerLinkActive="active-link-admin"
+              [routerLinkActiveOptions]="{ exact: false }"
+              (click)="onLinkClick()"
+              class="nav-link group flex items-center px-3 py-3 mb-1 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-all duration-200 relative"
+              [title]="(isCollapsed$ | async) ? link.label : ''"
+            >
+              <i
+                [class]="getIcon(link.icon) + ' text-blue-500 flex-shrink-0 transition-transform duration-200'"
+                [ngClass]="{
+                  'mr-3': !(isCollapsed$ | async),
+                  'mx-auto': (isCollapsed$ | async)
+                }"
+                style="width: 20px; text-align: center; font-size: 18px"
+              ></i>
+              <span
+                *ngIf="!(isCollapsed$ | async)"
+                class="font-medium whitespace-nowrap transition-opacity duration-300"
+                >{{ link.label }}</span
+              >
+            </a>
+          </div>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'Vendedor'">
+          <div class="mb-4">
+            <h3
+              *ngIf="!(isCollapsed$ | async)"
+              class="section-title text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2 transition-opacity duration-300"
+            >
+              Vendedor
+            </h3>
+            <a
+              *ngFor="let link of sellerLinks"
+              [routerLink]="link.path"
+              routerLinkActive="active-link-seller"
+              [routerLinkActiveOptions]="{ exact: false }"
+              (click)="onLinkClick()"
+              class="nav-link group flex items-center px-3 py-3 mb-1 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-all duration-200 relative"
+              [title]="(isCollapsed$ | async) ? link.label : ''"
+            >
+              <i
+                [class]="getIcon(link.icon) + ' text-green-500 flex-shrink-0 transition-transform duration-200'"
+                [ngClass]="{
+                  'mr-3': !(isCollapsed$ | async),
+                  'mx-auto': (isCollapsed$ | async)
+                }"
+                style="width: 20px; text-align: center; font-size: 18px"
+              ></i>
+              <span
+                *ngIf="!(isCollapsed$ | async)"
+                class="font-medium whitespace-nowrap transition-opacity duration-300"
+                >{{ link.label }}</span
+              >
+            </a>
+          </div>
+        </ng-container>
+
+        <ng-container *ngSwitchCase="'Cliente'">
+          <div class="mb-4">
+            <h3
+              *ngIf="!(isCollapsed$ | async)"
+              class="section-title text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3 px-2 transition-opacity duration-300"
+            >
+              Cliente
+            </h3>
+            <a
+              *ngFor="let link of clientLinks"
+              [routerLink]="link.path"
+              routerLinkActive="active-link-client"
+              [routerLinkActiveOptions]="{ exact: false }"
+              (click)="onLinkClick()"
+              class="nav-link group flex items-center px-3 py-3 mb-1 rounded-xl text-gray-700 hover:text-gray-900 hover:bg-gray-50 transition-all duration-200 relative"
+              [title]="(isCollapsed$ | async) ? link.label : ''"
+            >
+              <i
+                [class]="getIcon(link.icon) + ' text-purple-500 flex-shrink-0 transition-transform duration-200'"
+                [ngClass]="{
+                  'mr-3': !(isCollapsed$ | async),
+                  'mx-auto': (isCollapsed$ | async)
+                }"
+                style="width: 20px; text-align: center; font-size: 18px"
+              ></i>
+              <span
+                *ngIf="!(isCollapsed$ | async)"
+                class="font-medium whitespace-nowrap transition-opacity duration-300"
+                >{{ link.label }}</span
+              >
+            </a>
+          </div>
+        </ng-container>
+      </ng-container>
+    </nav>
+
+    <div class="p-4 border-t border-gray-100 flex-shrink-0">
+      <button
+        (click)="logout()"
+        class="logout-btn w-full flex items-center px-4 py-3 rounded-xl font-medium text-gray-700 hover:text-red-600 hover:bg-red-50 transition-all duration-200"
+        [ngClass]="{
+          'justify-center': (isCollapsed$ | async),
+          'justify-start': !(isCollapsed$ | async)
+        }"
+        [title]="(isCollapsed$ | async) ? 'Cerrar Sesión' : ''"
+      >
+        <i
+          class="fas fa-sign-out-alt text-red-500 flex-shrink-0 transition-transform duration-200"
+          [ngClass]="{
+            'mr-3': !(isCollapsed$ | async),
+            'mx-auto': (isCollapsed$ | async)
+          }"
+          style="width: 20px; text-align: center; font-size: 18px"
+        ></i>
+        <span *ngIf="!(isCollapsed$ | async)" class="font-medium transition-opacity duration-300">Cerrar Sesión</span>
+      </button>
+    </div>
+  </div>
+</aside>

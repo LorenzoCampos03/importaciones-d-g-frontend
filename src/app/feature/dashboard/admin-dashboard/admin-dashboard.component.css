@@ -1,0 +1,84 @@
+/* Admin Dashboard Styles - Clean & Professional */
+.admin-dashboard-container {
+  /* Contenedor limpio sin efectos */
+}
+
+/* Cards completamente estáticas */
+.bg-white {
+  /* Sin transiciones ni efectos hover */
+}
+
+/* Botones con transición mínima */
+button {
+  transition: background-color 0.15s ease;
+}
+
+/* Sin efectos adicionales */
+button::before {
+  display: none;
+}
+
+/* Responsive breakpoints */
+@media (max-width: 375px) {
+  .admin-dashboard-container {
+    @apply p-2;
+  }
+
+  .text-2xl {
+    @apply text-lg;
+  }
+
+  .text-3xl {
+    @apply text-xl;
+  }
+
+  .text-4xl {
+    @apply text-2xl;
+  }
+}
+
+/* Mobile text improvements */
+@media (max-width: 640px) {
+  .truncate-mobile {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 150px;
+  }
+
+  .stats-card-mobile {
+    @apply p-3 space-y-2;
+  }
+}
+
+/* Enhanced focus states for accessibility */
+button:focus {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+  .admin-dashboard-container {
+    @apply p-0;
+  }
+
+  button {
+    display: none;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .admin-dashboard-container {
+    padding: 1rem;
+  }
+
+  .grid {
+    gap: 1rem;
+  }
+
+  .text-4xl {
+    font-size: 2rem;
+  }
+}

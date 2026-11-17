@@ -1,0 +1,420 @@
+<div class="register-container h-screen w-screen fixed inset-0 z-50">
+  <div class="background-pattern absolute inset-0"></div>
+
+  <div class="register-card-container relative w-full max-w-4xl">
+    <div class="register-card">
+      <div class="header-section">
+        <div class="logo-container">
+          <svg class="logo-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+            ></path>
+          </svg>
+        </div>
+        <h2 class="welcome-title">Crear Cuenta</h2>
+        <p class="system-subtitle">Sistema de Importaciones D&G</p>
+      </div>
+      <div *ngIf="successMessage" class="alert-success">
+        <div class="alert-content">
+          <svg class="alert-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+            ></path>
+          </svg>
+          <p class="alert-text">{{ successMessage }}</p>
+        </div>
+      </div>
+
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="register-form">
+        <div class="form-section user-type-section">
+          <h3 class="section-title">Tipo de Usuario</h3>
+          <div class="form-group">
+            <label class="form-label">Seleccione el tipo de usuario</label>
+            <div class="radio-group">
+              <div *ngFor="let userType of userTypes" class="radio-option">
+                <input
+                  type="radio"
+                  [id]="userType.value"
+                  [value]="userType.value"
+                  formControlName="userType"
+                  class="radio-input"
+                />
+                <label [for]="userType.value" class="radio-label">
+                  {{ userType.label }}
+                </label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="form-content-grid">
+          <div class="form-column personal-info-column">
+            <div class="form-section">
+              <h3 class="section-title">Información Personal</h3>
+
+              <div class="form-group">
+                <label for="name" class="form-label">Nombre</label>
+                <input
+                  id="name"
+                  type="text"
+                  formControlName="name"
+                  class="form-input"
+                  [class.error]="isFieldInvalid('name')"
+                  placeholder="Solo letras"
+                />
+                <div *ngIf="isFieldInvalid('name')" class="error-message">
+                  {{ getFieldError('name') }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="lastName" class="form-label">Apellido</label>
+                <input
+                  id="lastName"
+                  type="text"
+                  formControlName="lastName"
+                  class="form-input"
+                  [class.error]="isFieldInvalid('lastName')"
+                  placeholder="Solo letras"
+                />
+                <div *ngIf="isFieldInvalid('lastName')" class="error-message">
+                  {{ getFieldError('lastName') }}
+                </div>
+              </div>
+
+              <div *ngIf="isUserTypeEmpresa()" class="form-group">
+                <label for="razonSocial" class="form-label">Razón Social</label>
+                <input
+                  id="razonSocial"
+                  type="text"
+                  formControlName="razonSocial"
+                  class="form-input"
+                  [class.error]="isFieldInvalid('razonSocial')"
+                  placeholder="Ingrese la razón social"
+                />
+                <div *ngIf="isFieldInvalid('razonSocial')" class="error-message">
+                  {{ getFieldError('razonSocial') }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="documentType" class="form-label">Tipo de Documento</label>
+                <select
+                  id="documentType"
+                  formControlName="documentType"
+                  class="form-select"
+                  [class.error]="isFieldInvalid('documentType')"
+                >
+                  <option *ngFor="let docType of documentTypes" [value]="docType.value">
+                    {{ docType.label }}
+                  </option>
+                </select>
+                <div *ngIf="isFieldInvalid('documentType')" class="error-message">
+                  {{ getFieldError('documentType') }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="documentNumber" class="form-label">Número de Documento</label>
+                <input
+                  id="documentNumber"
+                  type="text"
+                  formControlName="documentNumber"
+                  class="form-input"
+                  [class.error]="isFieldInvalid('documentNumber')"
+                  [placeholder]="getDocumentPlaceholder()"
+                  [maxlength]="getDocumentMaxLength()"
+                />
+                <div *ngIf="isFieldInvalid('documentNumber')" class="error-message">
+                  {{ getFieldError('documentNumber') }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="email" class="form-label">Email</label>
+                <div class="input-container">
+                  <div class="input-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
+                      ></path>
+                    </svg>
+                  </div>
+                  <input
+                    id="email"
+                    type="email"
+                    formControlName="email"
+                    class="form-input"
+                    [class.error]="isFieldInvalid('email')"
+                    placeholder="ejemplo@correo.com"
+                  />
+                </div>
+                <div *ngIf="isFieldInvalid('email')" class="error-message">
+                  {{ getFieldError('email') }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="phone" class="form-label">Teléfono</label>
+                <input
+                  id="phone"
+                  type="tel"
+                  formControlName="phone"
+                  class="form-input"
+                  [class.error]="isFieldInvalid('phone')"
+                  placeholder="987654321"
+                  maxlength="9"
+                />
+                <div *ngIf="isFieldInvalid('phone')" class="error-message">
+                  {{ getFieldError('phone') }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="address" class="form-label">Dirección</label>
+                <input
+                  id="address"
+                  type="text"
+                  formControlName="address"
+                  class="form-input"
+                  placeholder="Su dirección"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="form-column account-info-column">
+            <div class="form-section">
+              <h3 class="section-title">Información de Cuenta</h3>
+              <div class="form-group">
+                <label for="username" class="form-label">Usuario</label>
+                <div class="input-container">
+                  <div class="input-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                      ></path>
+                    </svg>
+                  </div>
+                  <input
+                    id="username"
+                    type="text"
+                    formControlName="username"
+                    class="form-input"
+                    [class.error]="isFieldInvalid('username')"
+                    [class.checking]="registerForm.get('username')?.pending"
+                    [class.valid]="registerForm.get('username')?.valid && registerForm.get('username')?.touched"
+                    placeholder="Nombre de usuario"
+                  />
+                  <div class="validation-indicator">
+                    <svg
+                      *ngIf="registerForm.get('username')?.pending"
+                      class="loading-icon"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <circle class="spinner" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    </svg>
+                    <svg
+                      *ngIf="registerForm.get('username')?.valid && registerForm.get('username')?.touched"
+                      class="success-icon"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                    <svg
+                      *ngIf="isFieldInvalid('username')"
+                      class="error-icon"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M6 18L18 6M6 6l12 12"
+                      ></path>
+                    </svg>
+                  </div>
+                </div>
+                <div *ngIf="isFieldInvalid('username')" class="error-message">
+                  {{ getFieldError('username') }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="password" class="form-label">Contraseña</label>
+                <div class="input-container">
+                  <div class="input-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                      ></path>
+                    </svg>
+                  </div>
+                  <input
+                    id="password"
+                    [type]="showPassword ? 'text' : 'password'"
+                    formControlName="password"
+                    class="form-input password-input"
+                    [class.error]="isFieldInvalid('password')"
+                    placeholder="Mínimo 8 caracteres"
+                  />
+                  <button type="button" (click)="togglePasswordVisibility()" class="password-toggle">
+                    <svg *ngIf="!showPassword" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      ></path>
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                      ></path>
+                    </svg>
+                    <svg *ngIf="showPassword" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
+                      ></path>
+                    </svg>
+                  </button>
+                </div>
+
+                <div *ngIf="registerForm.get('password')?.value" class="password-strength">
+                  <div class="strength-bar">
+                    <div
+                      class="strength-fill"
+                      [class]="passwordStrength.class"
+                      [style.width.%]="passwordStrength.score"
+                    ></div>
+                  </div>
+                  <span class="strength-text" [class]="passwordStrength.class">
+                    {{ passwordStrength.level }}
+                  </span>
+                </div>
+
+                <div
+                  *ngIf="registerForm.get('password')?.touched && getPasswordRequirements().length > 0"
+                  class="password-requirements"
+                >
+                  <p class="requirements-title">La contraseña debe tener:</p>
+                  <ul class="requirements-list">
+                    <li *ngFor="let requirement of getPasswordRequirements()" class="requirement-item">
+                      {{ requirement }}
+                    </li>
+                  </ul>
+                </div>
+
+                <div *ngIf="isFieldInvalid('password')" class="error-message">
+                  {{ getFieldError('password') }}
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="confirmPassword" class="form-label">Confirmar Contraseña</label>
+                <div class="input-container">
+                  <div class="input-icon">
+                    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                      ></path>
+                    </svg>
+                  </div>
+                  <input
+                    id="confirmPassword"
+                    [type]="showConfirmPassword ? 'text' : 'password'"
+                    formControlName="confirmPassword"
+                    class="form-input password-input"
+                    [class.error]="isFieldInvalid('confirmPassword')"
+                    placeholder="Repita su contraseña"
+                  />
+                  <button type="button" (click)="toggleConfirmPasswordVisibility()" class="password-toggle">
+                    <svg *ngIf="!showConfirmPassword" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                      ></path>
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                      ></path>
+                    </svg>
+                    <svg *ngIf="showConfirmPassword" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.878 9.878L3 3m6.878 6.878L21 21"
+                      ></path>
+                    </svg>
+                  </button>
+                </div>
+                <div *ngIf="isFieldInvalid('confirmPassword')" class="error-message">
+                  {{ getFieldError('confirmPassword') }}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button
+          type="submit"
+          [disabled]="registerForm.invalid || isLoading"
+          class="submit-button"
+          [class.loading]="isLoading"
+        >
+          <svg *ngIf="isLoading" class="loading-spinner" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            ></path>
+          </svg>
+          {{ isLoading ? 'Creando cuenta...' : 'Crear Cuenta' }}
+        </button>
+
+        <div class="login-link">
+          <p>
+            ¿Ya tienes cuenta?
+            <a routerLink="/login" class="link">Inicia sesión aquí</a>
+          </p>
+        </div>
+      </form>
+    </div>
+
+    <div class="decoration-top"></div>
+    <div class="decoration-bottom"></div>
+  </div>
+</div>

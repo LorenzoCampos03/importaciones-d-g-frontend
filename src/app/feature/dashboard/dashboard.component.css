@@ -1,0 +1,125 @@
+/* Dashboard Container */
+.dashboard-container {
+  min-height: calc(100vh - 4rem);
+  background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+}
+
+/* Card hover effects */
+.hover\:shadow-md:hover {
+  box-shadow:
+    0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+/* Stats cards animation */
+.bg-white {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.bg-white:hover {
+  transform: translateY(-2px);
+}
+
+/* Quick action buttons */
+button {
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: left 0.5s;
+}
+
+button:hover::before {
+  left: 100%;
+}
+
+/* Role-specific gradients */
+.admin-dashboard h1 {
+  background: linear-gradient(135deg, #2563eb, #9333ea);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.client-dashboard h1 {
+  background: linear-gradient(135deg, #059669, #0891b2);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.seller-dashboard h1 {
+  background: linear-gradient(135deg, #dc2626, #ea580c);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Icon containers */
+.p-3.rounded-full {
+  transition: transform 0.3s ease;
+}
+
+.bg-white:hover .p-3.rounded-full {
+  transform: scale(1.1);
+}
+
+/* Numbers animation */
+.text-2xl {
+  font-variant-numeric: tabular-nums;
+  transition: all 0.3s ease;
+}
+
+/* Grid responsive adjustments */
+@media (max-width: 768px) {
+  .dashboard-container {
+    padding: 1rem;
+  }
+
+  .grid {
+    gap: 1rem;
+  }
+
+  .text-3xl {
+    font-size: 1.875rem;
+  }
+}
+
+/* Loading states */
+.loading {
+  opacity: 0.7;
+  pointer-events: none;
+}
+
+/* Success states */
+.success {
+  border-color: #10b981;
+  background-color: #ecfdf5;
+}
+
+/* Custom scrollbar for dashboard content */
+.dashboard-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dashboard-container::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+.dashboard-container::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+
+.dashboard-container::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}

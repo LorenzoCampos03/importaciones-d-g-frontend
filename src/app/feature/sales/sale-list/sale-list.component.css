@@ -1,0 +1,49 @@
+/* Estilos personalizados para modales */
+.modal-backdrop {
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+
+/* Animaciones para modales */
+.modal-enter {
+  animation: fadeIn 0.3s ease-out;
+}
+
+.modal-content-enter {
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Asegurar que el blur funcione en todos los navegadores */
+@supports (backdrop-filter: blur(4px)) {
+  .modal-backdrop {
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(4px);
+  }
+}
+
+@supports not (backdrop-filter: blur(4px)) {
+  .modal-backdrop {
+    background: rgba(0, 0, 0, 0.6);
+  }
+}

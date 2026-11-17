@@ -1,0 +1,70 @@
+/* Estilos para el componente de formulario de compra del vendedor */
+
+/* Efectos de transición suaves */
+.transition-all {
+     transition-property: all;
+     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+     transition-duration: 300ms;
+}
+
+/* Hover effects */
+.hover\:shadow-xl:hover {
+     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Efectos hover para botones */
+button:hover {
+     transform: translateY(-1px);
+}
+
+/* Estilos para inputs en focus */
+input:focus, select:focus {
+     outline: none;
+     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Estilos para formularios */
+.form-group {
+     margin-bottom: 1.5rem;
+}
+
+/* Estilos para botones deshabilitados */
+button:disabled {
+     opacity: 0.6;
+     transform: none !important;
+}
+
+/* Estilos para validación de formularios */
+.ng-invalid.ng-touched {
+     border-color: #ef4444;
+}
+
+.ng-valid.ng-touched {
+     border-color: #10b981;
+}
+
+/* Animación de carga */
+@keyframes spin {
+     0% {
+          transform: rotate(0deg);
+     }
+
+     100% {
+          transform: rotate(360deg);
+     }
+}
+
+.fa-spin {
+     animation: spin 1s linear infinite;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+     .grid-cols-1.md\:grid-cols-2 {
+          grid-template-columns: repeat(1, minmax(0, 1fr));
+     }
+
+     .grid-cols-1.md\:grid-cols-3 {
+          grid-template-columns: repeat(1, minmax(0, 1fr));
+     }
+}

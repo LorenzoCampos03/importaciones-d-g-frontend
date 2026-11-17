@@ -1,0 +1,4 @@
+/* Estilos para el componente de lista de compras del vendedor */
+.modal-backdrop {
+     backdrop-filter: blur(4px);
+}

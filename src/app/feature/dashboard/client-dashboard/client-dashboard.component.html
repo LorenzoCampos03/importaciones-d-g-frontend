@@ -1,0 +1,234 @@
+<div class="client-dashboard-container p-6">
+  <div class="mb-8">
+    <div class="user-info-card rounded-xl p-8">
+      <div class="flex items-center justify-between user-info-header">
+        <div class="flex items-center space-x-6">
+          <div class="relative">
+            <div
+              class="w-20 h-20 bg-gradient-to-br from-blue-600 to-blue-800 rounded-full flex items-center justify-center shadow-lg">
+              <i class="fas fa-user text-white text-3xl"></i>
+            </div>
+            <div class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 rounded-full border-2 border-white"></div>
+          </div>
+          <div>
+            <h1 class="text-4xl font-bold dashboard-title mb-2">{{ currentUser?.name }} {{ currentUser?.lastName }}</h1>
+            <p class="text-lg text-gray-600 mb-1">{{ currentUser?.email }}</p>
+            <p class="text-sm text-gray-500 flex items-center">
+              <i class="fas fa-calendar-alt mr-2"></i>
+              Cliente desde: {{ formatMemberSince() }}
+            </p>
+          </div>
+        </div>
+        <div class="text-right">
+          <button (click)="openEditProfile()"
+            class="btn-primary text-white px-8 py-4 rounded-xl font-semibold text-lg flex items-center space-x-3">
+            <i class="fas fa-edit"></i>
+            <span>Actualizar Información</span>
+          </button>
+        </div>
+      </div>
+
+      <div class="mt-8 grid grid-cols-1 md:grid-cols-3 gap-6 pt-8 border-t border-gray-200 user-info-grid">
+        <div class="bg-gray-50 rounded-lg p-4">
+          <div class="flex items-center space-x-3">
+            <i class="fas fa-phone text-blue-600 text-lg"></i>
+            <div>
+              <p class="text-sm font-medium text-gray-500">Teléfono</p>
+              <p class="text-gray-900 font-semibold">{{ currentUser?.phone || 'No registrado' }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="bg-gray-50 rounded-lg p-4">
+          <div class="flex items-center space-x-3">
+            <i class="fas fa-map-marker-alt text-green-600 text-lg"></i>
+            <div>
+              <p class="text-sm font-medium text-gray-500">Dirección</p>
+              <p class="text-gray-900 font-semibold">{{ currentUser?.address || 'No registrada' }}</p>
+            </div>
+          </div>
+        </div>
+        <div class="bg-gray-50 rounded-lg p-4">
+          <div class="flex items-center space-x-3">
+            <i class="fas fa-user-tag text-purple-600 text-lg"></i>
+            <div>
+              <p class="text-sm font-medium text-gray-500">Rol</p>
+              <p class="text-gray-900 font-semibold">{{ currentUser?.role }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10 stats-grid">
+    <div class="stats-card rounded-xl p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="stat-label mb-2">Total de Compras</p>
+          <p class="text-4xl font-bold stat-number text-gray-900 mb-1">{{ clientStats.myOrders }}</p>
+          <p class="text-sm text-blue-600 font-medium flex items-center">
+            <i class="fas fa-arrow-up mr-1"></i>
+            Pedidos realizados
+          </p>
+        </div>
+        <div class="stat-icon" style="--icon-color-1: #3b82f6; --icon-color-2: #1d4ed8">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-card rounded-xl p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="stat-label mb-2">Pendientes</p>
+          <p class="text-4xl font-bold stat-number text-gray-900 mb-1">{{ clientStats.pendingOrders }}</p>
+          <p class="text-sm text-orange-600 font-medium flex items-center">
+            <i class="fas fa-clock mr-1"></i>
+            En proceso
+          </p>
+        </div>
+        <div class="stat-icon" style="--icon-color-1: #f59e0b; --icon-color-2: #d97706">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-card rounded-xl p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="stat-label mb-2">Completados</p>
+          <p class="text-4xl font-bold stat-number text-gray-900 mb-1">{{ clientStats.deliveredOrders }}</p>
+          <p class="text-sm text-green-600 font-medium flex items-center">
+            <i class="fas fa-check mr-1"></i>
+            Entregados
+          </p>
+        </div>
+        <div class="stat-icon" style="--icon-color-1: #10b981; --icon-color-2: #059669">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-card rounded-xl p-6">
+      <div class="flex items-center justify-between">
+        <div>
+          <p class="stat-label mb-2">Total Gastado</p>
+          <p class="text-4xl font-bold stat-number text-gray-900 mb-1">
+            {{ formatCurrencyPeru(clientStats.totalSpent) }}
+          </p>
+          <p class="text-sm text-purple-600 font-medium flex items-center">
+            <i class="fas fa-coins mr-1"></i>
+            En compras
+          </p>
+        </div>
+        <div class="stat-icon" style="--icon-color-1: #8b5cf6; --icon-color-2: #7c3aed">
+          <svg class="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1">
+            </path>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="user-info-card rounded-xl p-8">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <h2 class="text-3xl font-bold dashboard-title mb-2">Compras Recientes</h2>
+        <p class="text-gray-600">Últimas transacciones realizadas</p>
+      </div>
+      <button (click)="navigateTo('/client/purchases')"
+        class="btn-primary text-white px-6 py-3 rounded-lg font-medium flex items-center space-x-2">
+        <span>Ver todas</span>
+        <i class="fas fa-arrow-right"></i>
+      </button>
+    </div>
+
+    <div *ngIf="loading" class="loading-state rounded-lg p-8 text-center">
+      <div class="flex items-center justify-center">
+        <div class="animate-spin rounded-full h-10 w-10 border-b-2 border-blue-600"></div>
+        <span class="ml-4 text-gray-600 text-lg">Cargando datos...</span>
+      </div>
+    </div>
+
+
+    <div *ngIf="error && !loading" class="error-state rounded-lg p-6">
+      <div class="flex items-center text-red-700">
+        <svg class="w-6 h-6 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>
+        <span class="font-medium">{{ error }}</span>
+      </div>
+    </div>
+
+    <div *ngIf="!loading && !error">
+      <div *ngIf="recentOrders.length === 0" class="text-center py-12">
+        <div class="w-24 h-24 mx-auto mb-6 bg-gray-100 rounded-full flex items-center justify-center">
+          <svg class="w-12 h-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+              d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-semibold text-gray-900 mb-2">No tienes compras recientes</h3>
+        <p class="text-gray-600 mb-6">¡Explora nuestro catálogo y realiza tu primera compra!</p>
+        <button (click)="navigateTo('/client/catalog')" class="btn-primary text-white px-8 py-3 rounded-lg font-medium">
+          Explorar Productos
+        </button>
+      </div>
+
+      <div *ngIf="recentOrders.length > 0" class="space-y-4">
+        <div *ngFor="let order of recentOrders" class="recent-order-item bg-gray-50 rounded-lg p-6">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center flex-1">
+              <div class="mr-6">
+                <div
+                  class="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-700 rounded-lg flex items-center justify-center shadow-md">
+                  <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                      d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path>
+                  </svg>
+                </div>
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center justify-between mb-3">
+                  <h3 class="text-xl font-bold text-gray-900">Compra #{{ order.saleId }}</h3>
+                  <span class="px-4 py-2 rounded-full text-sm font-semibold" [ngClass]="getStatusClass(order.status)">
+                    {{ getStatusText(order.status) }}
+                  </span>
+                </div>
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center space-x-4 text-sm text-gray-600">
+                    <span class="flex items-center">
+                      <i class="fas fa-box mr-2"></i>
+                      {{ order.itemCount }} {{ order.itemCount === 1 ? 'producto' : 'productos' }}
+                    </span>
+                    <span class="flex items-center">
+                      <i class="fas fa-calendar mr-2"></i>
+                      {{ formatDate(order.saleDate) }}
+                    </span>
+                  </div>
+                  <span class="text-2xl font-bold text-gray-900">
+                    {{ formatCurrencyPeru(order.total) }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            <button (click)="trackOrder(order.saleId)"
+              class="ml-6 btn-primary text-white px-6 py-3 rounded-lg font-medium flex items-center space-x-2">
+              <i class="fas fa-eye"></i>
+              <span>Ver Detalles</span>
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

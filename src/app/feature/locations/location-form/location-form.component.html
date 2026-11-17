@@ -1,0 +1,108 @@
+<div class="office-form-container p-6 min-h-screen bg-blue-50">
+     <div class="max-w-2xl mx-auto">
+          <div class="mb-8">
+               <div class="flex items-center space-x-4">
+                    <button (click)="goBack()"
+                         class="bg-white hover:bg-gray-50 text-gray-700 p-3 rounded-xl shadow-lg hover:shadow-xl transition-all">
+                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7">
+                              </path>
+                         </svg>
+                    </button>
+                    <div>
+                         <h1 class="text-4xl font-bold text-blue-600 mb-2">
+                              {{ isEditMode ? 'Editar Oficina' : 'Nueva Oficina' }}
+                         </h1>
+                         <p class="text-gray-600">{{ isEditMode ? 'Modifica los datos de la oficina' : 'Completa la
+                              información para crear una nueva oficina' }}</p>
+                    </div>
+               </div>
+          </div>
+
+          <div class="bg-white rounded-2xl shadow-lg p-8">
+               <form [formGroup]="officeForm" (ngSubmit)="onSubmit()">
+                    <div class="grid grid-cols-1 gap-6">
+                         <div>
+                              <label for="office_name" class="block text-sm font-medium text-gray-700 mb-2">
+                                   Nombre de la Oficina *
+                              </label>
+                              <input id="office_name" type="text" formControlName="office_name" [class]="'w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ' +
+                       (isFieldInvalid('office_name') ? 'border-red-300 bg-red-50' : 'border-gray-300')"
+                                   placeholder="Ingresa el nombre de la oficina" />
+                              <div *ngIf="isFieldInvalid('office_name')" class="mt-2 text-sm text-red-600">
+                                   {{ getFieldError('office_name') }}
+                              </div>
+                         </div>
+
+                         <div>
+                              <label for="address" class="block text-sm font-medium text-gray-700 mb-2">
+                                   Dirección *
+                              </label>
+                              <input id="address" type="text" formControlName="address" [class]="'w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ' +
+                       (isFieldInvalid('address') ? 'border-red-300 bg-red-50' : 'border-gray-300')"
+                                   placeholder="Ingresa la dirección completa" />
+                              <div *ngIf="isFieldInvalid('address')" class="mt-2 text-sm text-red-600">
+                                   {{ getFieldError('address') }}
+                              </div>
+                         </div>
+
+                         <div>
+                              <label for="city" class="block text-sm font-medium text-gray-700 mb-2">
+                                   Ciudad *
+                              </label>
+                              <input id="city" type="text" formControlName="city" [class]="'w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ' +
+                       (isFieldInvalid('city') ? 'border-red-300 bg-red-50' : 'border-gray-300')"
+                                   placeholder="Ingresa la ciudad" />
+                              <div *ngIf="isFieldInvalid('city')" class="mt-2 text-sm text-red-600">
+                                   {{ getFieldError('city') }}
+                              </div>
+                         </div>
+
+                         <div>
+                              <label for="phone" class="block text-sm font-medium text-gray-700 mb-2">
+                                   Teléfono *
+                              </label>
+                              <input id="phone" type="text" formControlName="phone" [class]="'w-full px-4 py-3 border rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all ' +
+                       (isFieldInvalid('phone') ? 'border-red-300 bg-red-50' : 'border-gray-300')"
+                                   placeholder="Ingresa el número de teléfono" />
+                              <div *ngIf="isFieldInvalid('phone')" class="mt-2 text-sm text-red-600">
+                                   {{ getFieldError('phone') }}
+                              </div>
+                         </div>
+                    </div>
+
+                    <div class="flex justify-end space-x-4 mt-8">
+                         <button type="button" (click)="goBack()"
+                              class="px-8 py-3 bg-gray-100 hover:bg-gray-200 text-gray-700 font-medium rounded-xl transition-all">
+                              <div class="flex items-center space-x-2">
+                                   <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                             d="M6 18L18 6M6 6l12 12"></path>
+                                   </svg>
+                                   <span>Cancelar</span>
+                              </div>
+                         </button>
+
+                         <button type="submit" [disabled]="isLoading || officeForm.invalid"
+                              class="px-8 py-3 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-xl transition-all shadow-lg hover:shadow-xl disabled:opacity-50 disabled:cursor-not-allowed">
+                              <div class="flex items-center space-x-2">
+                                   <svg *ngIf="isLoading" class="animate-spin w-4 h-4" fill="none" viewBox="0 0 24 24">
+                                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor"
+                                             stroke-width="4"></circle>
+                                        <path class="opacity-75" fill="currentColor"
+                                             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                        </path>
+                                   </svg>
+                                   <svg *ngIf="!isLoading" class="w-4 h-4" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                             d="M5 13l4 4L19 7"></path>
+                                   </svg>
+                                   <span>{{ isEditMode ? 'Actualizar' : 'Crear' }} Oficina</span>
+                              </div>
+                         </button>
+                    </div>
+               </form>
+          </div>
+     </div>
+</div>

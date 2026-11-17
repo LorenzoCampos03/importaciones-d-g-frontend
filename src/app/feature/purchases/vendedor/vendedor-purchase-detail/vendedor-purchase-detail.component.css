@@ -1,0 +1,32 @@
+/* Estilos para el componente de detalle de compra del vendedor */
+@keyframes spin {
+     0% {
+          transform: rotate(0deg);
+     }
+
+     100% {
+          transform: rotate(360deg);
+     }
+}
+
+/* Hover effects */
+.hover\:shadow-xl:hover {
+     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+/* Efectos de transición suaves */
+.transition-all {
+     transition-property: all;
+     transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+     transition-duration: 300ms;
+}
+
+/* Efectos hover para botones */
+button:hover {
+     transform: translateY(-1px);
+}
+
+/* Estilos para la tabla */
+table tbody tr:hover {
+     background-color: rgba(249, 250, 251, 1);
+}

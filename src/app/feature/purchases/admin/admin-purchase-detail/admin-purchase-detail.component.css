@@ -1,0 +1,156 @@
+/* Admin Purchase Detail Styles */
+.admin-purchase-detail-container {
+     background-color: #f9fafb;
+     min-height: 100vh;
+}
+
+/* Print styles */
+@media print {
+     .admin-purchase-detail-container {
+          background: white !important;
+          padding: 0 !important;
+     }
+
+     /* Hide buttons and actions when printing */
+     button,
+     .no-print {
+          display: none !important;
+     }
+
+     .bg-gray-50,
+     .bg-gray-100 {
+          background: white !important;
+     }
+
+     .shadow,
+     .border {
+          box-shadow: none !important;
+          border: 1px solid #e5e7eb !important;
+     }
+}
+
+/* Status timeline styles */
+.status-timeline {
+     position: relative;
+}
+
+.status-timeline::before {
+     content: '';
+     position: absolute;
+     left: 6px;
+     top: 24px;
+     bottom: 0;
+     width: 2px;
+     background-color: #e5e7eb;
+}
+
+/* Card hover effects */
+.detail-card {
+     transition: all 0.3s ease;
+}
+
+.detail-card:hover {
+     box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.1);
+     transform: translateY(-2px);
+}
+
+/* Enhanced table styles */
+.purchase-table {
+     border-collapse: separate;
+     border-spacing: 0;
+}
+
+.purchase-table th:first-child {
+     border-top-left-radius: 0.5rem;
+}
+
+.purchase-table th:last-child {
+     border-top-right-radius: 0.5rem;
+}
+
+.purchase-table tbody tr:last-child td:first-child {
+     border-bottom-left-radius: 0.5rem;
+}
+
+.purchase-table tbody tr:last-child td:last-child {
+     border-bottom-right-radius: 0.5rem;
+}
+
+/* Button transitions */
+.action-button {
+     transition: all 0.2s ease;
+}
+
+.action-button:hover {
+     transform: translateY(-1px);
+     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Status dot animation */
+.status-dot {
+     transition: all 0.3s ease;
+     position: relative;
+}
+
+.status-dot.active {
+     animation: pulse 2s infinite;
+}
+
+@keyframes pulse {
+     0%, 100% {
+          opacity: 1;
+     }
+
+     50% {
+          opacity: 0.5;
+     }
+}
+
+/* Responsive improvements */
+@media (max-width: 768px) {
+
+     .purchase-table th,
+     .purchase-table td {
+          padding: 0.5rem 0.75rem;
+          font-size: 0.875rem;
+     }
+
+     .detail-card {
+          margin: 0 -1rem;
+          border-radius: 0;
+          border-left: 0;
+          border-right: 0;
+     }
+}
+
+/* Enhanced focus states */
+button:focus,
+.focus-element:focus {
+     outline: 2px solid #3b82f6;
+     outline-offset: 2px;
+}
+
+/* Loading animation improvements */
+.loading-container {
+     min-height: 50vh;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+}
+
+/* Success/Error message animations */
+.message-slide-in {
+     animation: slideInFromRight 0.3s ease-out;
+}
+
+@keyframes slideInFromRight {
+     from {
+          transform: translateX(100%);
+          opacity: 0;
+     }
+
+     to {
+          transform: translateX(0);
+          opacity: 1;
+     }
+}
